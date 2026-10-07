@@ -19,6 +19,7 @@ pub async fn handler(
 }
 
 async fn handle_socket(socket: WebSocket, state: Arc<AppState>) {
+    log::info!("[ws] client connected ({} subscribers)", state.events.receiver_count());
     let mut rx = state.events.subscribe();
     let (mut sender, mut receiver) = socket.split();
 

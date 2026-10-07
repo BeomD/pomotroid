@@ -14,6 +14,9 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use axum::extract::Request;
+use axum::middleware::{self, Next};
+use axum::response::Response;
 use axum::routing::{get, post};
 use axum::Router;
 use tokio::sync::broadcast;
@@ -122,6 +125,7 @@ async fn main() {
             ServeDir::new(&static_dir).not_found_service(ServeFile::new(&index)),
         )
         .layer(CorsLayer::permissive())
+        .layer(middleware::from_fn(log_requests))
         .with_state(state);
 
     let addr = format!("0.0.0.0:{port}");
@@ -141,4 +145,14 @@ async fn main() {
 
 fn display(p: &Path) -> String {
     p.to_string_lossy().into_owned()
+}
+
+/// Log every HTTP request path + method so frontend activity (button clicks)
+/// is visible in the container logs.
+async fn log_requests(req: Request, next: Next) -> Response {
+    let method = req.method().clone();
+    let path = req.uri().path().to_string();
+    let response = next.run(req).await;
+    log::info!("[http] {} {} -> {}", method, path, response.status().as_u16());
+    response
 }
