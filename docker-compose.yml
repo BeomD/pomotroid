@@ -1,0 +1,23 @@
+services:
+  pomotroid:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pomotroid-web:latest
+    container_name: pomotroid-web
+    restart: unless-stopped
+    # Host port 6666 → container port 6666.
+    # Nginx Proxy Manager (NPM Plus) forwards your domain to this host port.
+    ports:
+      - "6666:6666"
+    volumes:
+      # SQLite database (pomotroid.db) + uploaded alert sounds live here.
+      - ./data:/data
+    environment:
+      POMOTROID_PORT: "6666"
+      POMOTROID_DATA_DIR: /data
+      POMOTROID_STATIC_DIR: /app/build
+      POMOTROID_THEMES_DIR: /app/themes
+      RUST_LOG: info
+      # Local timezone — used by daily/weekly stats and streak calculation.
+      TZ: Asia/Seoul

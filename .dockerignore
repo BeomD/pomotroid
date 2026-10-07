@@ -1,0 +1,26 @@
+.git
+.github
+.vscode
+.idea
+
+# Node
+node_modules
+build
+.prettierignore
+.prettierrc
+
+# Rust build artifacts
+server/target
+src-tauri/target
+
+# Runtime data / logs
+data
+*.log
+
+# Docs / meta not needed in the image
+openspec
+CHANGELOG.md
+README.md
+SECURITY.md
+THEMES.md
+CONTRIBUTING.md
