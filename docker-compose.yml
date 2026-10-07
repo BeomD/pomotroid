@@ -3,7 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: pomotroid-web:latest
+    # Built locally from the Dockerfile — never pull from a registry.
+    pull_policy: build
     container_name: pomotroid-web
     restart: unless-stopped
     # Host port 6666 → container port 6666.
